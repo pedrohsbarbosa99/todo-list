@@ -9,24 +9,44 @@ Meu objetivo é criar um todo-list em python, sem uso de nenhuma biblioteca exte
 ## Estrutura do Projeto
 
 ``` bash
+.
 ├── api
-│   ├── __init__.py
+│   ├── auth
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── response.py
+│   ├── tasks
+│   │   ├── urls.py
+│   │   └── views.py
 │   └── users
 │       ├── urls.py
 │       └── views.py
 ├── core
 │   ├── config.py
-│   ├── database.py
-│   ├── __init__.py
+│   ├── database
+│   │   ├── config.py
+│   │   ├── task.py
+│   │   └── user.py
 │   ├── models.py
+│   ├── service
+│   │   ├── auth
+│   │   │   ├── authentication.py
+│   │   │   ├── decorators.py
+│   │   │   ├── jwt.py
+│   │   │   └── utils.py
+│   │   ├── task
+│   │   │   └── service.py
+│   │   └── user
+│   │       └── service.py
 │   └── urls.py
+├── database.db
+├── dockerfile
 ├── dongle
 │   ├── handlers.py
-│   ├── __init__.py
 │   ├── urls
-│   │   ├── conf.py
-│   │   └── __init__.py
+│   │   └── conf.py
 │   └── utils.py
+├── LICENSE
 ├── README.md
 └── server.py
 ```
