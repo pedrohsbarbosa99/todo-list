@@ -1,19 +1,35 @@
-import json
+from service.users import User
 
 users_db = []
 
+user = User()
 
-def get_users(_):
-    return {"users": users_db}, 200
+
+def get_users(request):
+    return user.list(), 200
 
 
 def create_user(request):
     data = request.body
 
-    if "name" not in data:
-        return {"error": "O campo name é obrigatorio"}, 400
+    user.create(data)
 
-    user = {"id": len(users_db) + 1, "name": data["name"]}
-    users_db.append(user)
+    return {"message": f"Usuário {data['username']} criado!"}, 200
 
-    return {"message": f"Usuário {data['name']} criado!", "user": user}, 400
+
+def retrieve_user(request, pk):
+    return user.retrieve(pk), 200
+
+
+def delete_user(request, pk):
+    user.delete(pk)
+
+    return {"message": f"Usuário {pk} deletado!"}, 200
+
+
+def update_user(request, pk):
+    data = request.body
+
+    user.update(pk, data)
+
+    return {"message": f"Usuário {pk} atualizado!"}, 200

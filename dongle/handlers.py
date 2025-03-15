@@ -1,6 +1,8 @@
 from http.server import BaseHTTPRequestHandler
 import json
+from urllib.parse import urlparse
 from core.urls import routes
+from dongle.utils import find_matching_route
 
 
 class RequestHandler(BaseHTTPRequestHandler):
@@ -17,10 +19,17 @@ class RequestHandler(BaseHTTPRequestHandler):
     def do_DELETE(self):
         self.handle_request("DELETE")
 
+    def do_PATCH(self):
+        self.handle_request("PATCH")
+
     def handle_request(self, method):
-        handler = routes.get((method, self.path))
+        handler, params = find_matching_route(routes, method, self.path)
+
         if handler:
-            response, status = handler(self)
+            if params:
+                response, status = handler(self, **params)
+            else:
+                response, status = handler(self)
             self.send_response(status)
         else:
             response = {"error": "Rota não encontrada"}
@@ -36,3 +45,8 @@ class RequestHandler(BaseHTTPRequestHandler):
         body = self.rfile.read(content_length)
         data = json.loads(body.decode())
         return data
+
+    @property
+    def query_params(self):
+        parsed_url = urlparse(self.path)
+        return parsed_url.query
