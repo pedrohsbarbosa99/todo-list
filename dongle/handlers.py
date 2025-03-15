@@ -1,6 +1,8 @@
-from http.server import BaseHTTPRequestHandler
 import json
+from functools import cached_property
+from http.server import BaseHTTPRequestHandler
 from urllib.parse import urlparse
+
 from core.urls import routes
 from dongle.utils import find_matching_route
 
@@ -39,14 +41,14 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(response).encode())
 
-    @property
+    @cached_property
     def body(self):
         content_length = int(self.headers.get("Content-Length", 0))
         body = self.rfile.read(content_length)
         data = json.loads(body.decode())
         return data
 
-    @property
+    @cached_property
     def query_params(self):
         parsed_url = urlparse(self.path)
         return parsed_url.query
