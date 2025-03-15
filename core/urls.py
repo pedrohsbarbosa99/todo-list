@@ -1,7 +1,9 @@
-from dongle.urls.conf import include, build_routers
+from dongle.urls.conf import build_routers, include
 
 urlpatterns = [
     include("api.users.urls"),
+    include("api.auth.urls"),
+    include("api.tasks.urls"),
 ]
 
 
