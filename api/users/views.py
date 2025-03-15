@@ -1,12 +1,14 @@
-from service.users import User
+from core.service.auth.authentication import JWTAuthentication
+from core.service.auth.decorators import authentication_class
+from core.service.user import UserService
+from api.response import success_response
 
-users_db = []
-
-user = User()
+user = UserService()
 
 
+@authentication_class(auth_class=JWTAuthentication)
 def get_users(request):
-    return user.list(), 200
+    return success_response(user.list())
 
 
 def create_user(request):
@@ -14,22 +16,25 @@ def create_user(request):
 
     user.create(data)
 
-    return {"message": f"Usuário {data['username']} criado!"}, 200
+    return success_response(status=201)
 
 
+@authentication_class(auth_class=JWTAuthentication)
 def retrieve_user(request, pk):
-    return user.retrieve(pk), 200
+    return success_response(user.retrieve(pk))
 
 
+@authentication_class(auth_class=JWTAuthentication)
 def delete_user(request, pk):
     user.delete(pk)
 
-    return {"message": f"Usuário {pk} deletado!"}, 200
+    return success_response(status=204)
 
 
+@authentication_class(auth_class=JWTAuthentication)
 def update_user(request, pk):
     data = request.body
 
     user.update(pk, data)
 
-    return {"message": f"Usuário {pk} atualizado!"}, 200
+    return success_response(status=204)
