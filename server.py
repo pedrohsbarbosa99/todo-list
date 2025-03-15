@@ -1,15 +1,15 @@
 import os
 from http.server import HTTPServer
+
+from core.database.config import init_db
 from dongle.handlers import RequestHandler
-from core.database import init_db
 
 HOST = os.environ.get("HOST", "127.0.0.1")
 PORT = int(os.environ.get("PORT", 8000))
 
-init_db()
-
 
 def run_server():
+    init_db()
     server = HTTPServer((HOST, PORT), RequestHandler)
     print(f"Servidor rodando em http://{HOST}:{PORT}")
     server.serve_forever()

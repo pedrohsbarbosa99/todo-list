@@ -1,5 +1,6 @@
+import re
+import sys
 from importlib import import_module
-import sys, re
 from urllib.parse import urlparse
 
 
