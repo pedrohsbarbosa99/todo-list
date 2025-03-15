@@ -10,3 +10,4 @@ ENV HOST=""
 ENV PORT=80
 
 CMD ["python", "server.py"]
+
