@@ -29,7 +29,7 @@ class User:
         with connection.cursor() as cursor:
 
             cursor.execute(
-                "SELECT id, username, password FROM users WHERE username = ?",
+                "SELECT id, username, password FROM users WHERE username = $1",
                 (username,),
             )
             user = cursor.fetchone()

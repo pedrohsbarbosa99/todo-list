@@ -18,8 +18,13 @@ class Cursor:
     def from_connection(cls, connection):
         return cls(connection, dxpq_ext.PGCursor(connection))
 
-    def execute(self, sql: str):
+    def execute(self, sql: str, params=None):
+        if params is not None:
+            return self._cursor.execute_params(sql, params)
         return self._cursor.execute(sql)
+
+    def fetchone(self):
+        return self._cursor.fetchone()
 
     def fetchall(self):
         return self._cursor.fetchall()
