@@ -10,8 +10,7 @@ ENV HOST=""
 ENV PORT=80
 
 RUN apt-get update && \
-    apt-get install -y gcc build-essential libpq-dev python3-dev git && \
-    ln -s /usr/include/postgresql/* /usr/include/
+    apt-get install -y gcc build-essential libpq-dev python3-dev git
 
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
