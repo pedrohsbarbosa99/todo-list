@@ -11,7 +11,7 @@ class TaskService:
 
     def retrieve(self, id):
         task = self.repository.retrieve(id)
-        return {"id": task["id"], "title": task["title"]} if task else {}
+        return {"title": task["title"]} if task else {}
 
     def create(self, data, user_id):
         return self.repository.create(data, user_id)

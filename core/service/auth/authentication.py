@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from core.service.auth.jwt import JWT
-from core.service.user import UserService
 from core.service.auth.utils import is_valid_password
+from core.service.user import UserService
 
 
 class JWTAuthentication:
@@ -31,6 +33,9 @@ class JWTAuthentication:
             return False
 
         _, payload = jwt.decode(token)
+
+        if datetime.now() > datetime.fromtimestamp(payload["exp"]):
+            return False
 
         user = UserService().retrieve_by_username_for_auth(payload["username"])
 

@@ -1,10 +1,4 @@
-from .views import (
-    create_user,
-    delete_user,
-    get_users,
-    retrieve_user,
-    update_user,
-)
+from .views import create_user, delete_user, get_users, retrieve_user, update_user
 
 urlpatterns = [
     ("GET", "/users", get_users),

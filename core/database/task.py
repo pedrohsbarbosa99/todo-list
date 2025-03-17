@@ -1,28 +1,25 @@
 import uuid
 
-from core.database.config import get_db
+from core.database.config import connection
 
 
 class Task:
 
     @staticmethod
     def list(user_id):
-        with get_db() as db:
-            cursor = db.cursor()
-            cursor.execute(
-                "SELECT id, title, description, completed FROM tasks WHERE user_id = ?",
+        with connection.cursor() as cursor:
+            tasks = cursor.fetchall(
+                "SELECT id, title, description, completed FROM tasks WHERE user_id = $1",
                 (user_id,),
             )
-            tasks = cursor.fetchall()
 
         return tasks
 
     @staticmethod
     def retrieve(id):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
             cursor.execute(
-                "SELECT title, description, completed FROM tasks WHERE id = ?", (id,)
+                "SELECT title, description, completed FROM tasks WHERE id = $1", (id,)
             )
             task = cursor.fetchone()
 
@@ -30,10 +27,9 @@ class Task:
 
     @staticmethod
     def create(data, user_id):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO tasks (id, user_id, title, description) VALUES (?, ?, ?, ?)",
+                "INSERT INTO tasks (id, user_id, title, description) VALUES ($1, $2, $3, $4) RETURNING id",
                 (
                     str(uuid.uuid4()),
                     user_id,
@@ -42,28 +38,25 @@ class Task:
                 ),
             )
 
-            db.commit()
+            task_id = cursor.fetchone()
+
+        return task_id
 
     @staticmethod
     def delete(id):
-        with get_db() as db:
-            cursor = db.cursor()
-            cursor.execute("DELETE FROM tasks WHERE id = ?", (id,))
+        with connection.cursor() as cursor:
 
-            db.commit()
+            cursor.execute("DELETE FROM tasks WHERE id = $1", (id,))
 
     def update(id, data):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
 
             cursor.execute(
                 """
                 UPDATE tasks 
-                SET title = COALESCE(?, title),
-                description = COALESCE(?, description)
-                WHERE id = ?
+                SET title = COALESCE($1, title),
+                description = COALESCE($2, description)
+                WHERE id = $3
                 """,
                 (data.get("title"), data.get("description"), id),
             )
-
-            db.commit()

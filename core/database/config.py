@@ -1,23 +1,15 @@
-import sqlite3
+import dxpq
+from core.config import DATABASE_URL
 
-# Caminho do banco de dados
-DATABASE = "database.db"
-
-
-def get_db():
-    db = sqlite3.connect(DATABASE)
-    db.row_factory = sqlite3.Row
-    return db
+connection = dxpq.Connection(DATABASE_URL)
 
 
 def init_db():
-    with get_db() as db:
-        cursor = db.cursor()
-
+    with connection.cursor() as cursor:
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS users (
-                id TEXT PRIMARY KEY,
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 username TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL
             )
@@ -27,8 +19,8 @@ def init_db():
         cursor.execute(
             """
             CREATE TABLE IF NOT EXISTS tasks (
-                id TEXT PRIMARY KEY,
-                user_id INTEGER NOT NULL,
+                id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                user_id UUID NOT NULL,
                 title TEXT NOT NULL,
                 description TEXT,
                 completed BOOLEAN DEFAULT FALSE,
@@ -36,5 +28,3 @@ def init_db():
             )
             """
         )
-
-        db.commit()

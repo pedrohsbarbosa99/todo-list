@@ -1,5 +1,4 @@
-from .views import (create_task, delete_task, list_tasks, retrieve_task,
-                    update_task)
+from .views import create_task, delete_task, list_tasks, retrieve_task, update_task
 
 urlpatterns = [
     ("GET", "/tasks", list_tasks),
