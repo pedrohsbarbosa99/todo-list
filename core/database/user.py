@@ -19,7 +19,7 @@ class User:
     def retrieve(id):
         with connection.cursor() as cursor:
 
-            cursor.execute("SELECT username FROM users WHERE id = ?", (id,))
+            cursor.execute("SELECT username FROM users WHERE id = $1", (id,))
             user = cursor.fetchone()
 
         return user
@@ -57,7 +57,7 @@ class User:
         with connection.cursor() as cursor:
 
             cursor.execute(
-                "INSERT INTO users (id, username, password) VALUES (?, ?, ?)",
+                "INSERT INTO users (id, username, password) VALUES ($1, $2, $3)",
                 (str(uuid.uuid4()), data["username"], make_password(password)),
             )
 
@@ -65,7 +65,7 @@ class User:
     def delete(id):
         with connection.cursor() as cursor:
 
-            cursor.execute("DELETE FROM users WHERE id = ?", (id,))
+            cursor.execute("DELETE FROM users WHERE id = $1", (id,))
 
     @staticmethod
     def update(self, id, data):
@@ -74,8 +74,8 @@ class User:
             cursor.execute(
                 """
                 UPDATE users 
-                SET username = COALESCE(?, username)
-                WHERE id = ?
+                SET username = COALESCE($1, username)
+                WHERE id = $2
                 """,
                 (data.get("username"), id),
             )

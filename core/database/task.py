@@ -9,7 +9,7 @@ class Task:
     def list(user_id):
         with connection.cursor() as cursor:
             tasks = cursor.fetchall(
-                "SELECT id, title, description, completed FROM tasks WHERE user_id = ?",
+                "SELECT id, title, description, completed FROM tasks WHERE user_id = $1",
                 (user_id,),
             )
 
@@ -19,7 +19,7 @@ class Task:
     def retrieve(id):
         with connection.cursor() as cursor:
             cursor.execute(
-                "SELECT title, description, completed FROM tasks WHERE id = ?", (id,)
+                "SELECT title, description, completed FROM tasks WHERE id = $1", (id,)
             )
             task = cursor.fetchone()
 
@@ -29,7 +29,7 @@ class Task:
     def create(data, user_id):
         with connection.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO tasks (id, user_id, title, description) VALUES (?, ?, ?, ?) RETURNING id",
+                "INSERT INTO tasks (id, user_id, title, description) VALUES ($1, $2, $3, $4) RETURNING id",
                 (
                     str(uuid.uuid4()),
                     user_id,
@@ -46,7 +46,7 @@ class Task:
     def delete(id):
         with connection.cursor() as cursor:
 
-            cursor.execute("DELETE FROM tasks WHERE id = ?", (id,))
+            cursor.execute("DELETE FROM tasks WHERE id = $1", (id,))
 
     def update(id, data):
         with connection.cursor() as cursor:
@@ -54,9 +54,9 @@ class Task:
             cursor.execute(
                 """
                 UPDATE tasks 
-                SET title = COALESCE(?, title),
-                description = COALESCE(?, description)
-                WHERE id = ?
+                SET title = COALESCE($1, title),
+                description = COALESCE($2, description)
+                WHERE id = $3
                 """,
                 (data.get("title"), data.get("description"), id),
             )
