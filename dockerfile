@@ -9,4 +9,6 @@ EXPOSE 8000
 ENV HOST=""
 ENV PORT=80
 
+RUN pip install -r requirements.txt
+
 CMD ["python", "server.py"]
