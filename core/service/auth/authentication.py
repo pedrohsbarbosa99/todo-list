@@ -1,7 +1,8 @@
 from datetime import datetime
+
 from core.service.auth.jwt import JWT
-from core.service.user import UserService
 from core.service.auth.utils import is_valid_password
+from core.service.user import UserService
 
 
 class JWTAuthentication:

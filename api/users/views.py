@@ -1,7 +1,7 @@
+from api.response import success_response
 from core.service.auth.authentication import JWTAuthentication
 from core.service.auth.decorators import authentication_class
 from core.service.user import UserService
-from api.response import success_response
 
 user = UserService()
 
