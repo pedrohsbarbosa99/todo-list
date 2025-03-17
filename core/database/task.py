@@ -1,26 +1,23 @@
 import uuid
 
-from core.database.config import get_db
+from core.database.config import connection
 
 
 class Task:
 
     @staticmethod
     def list(user_id):
-        with get_db() as db:
-            cursor = db.cursor()
-            cursor.execute(
+        with connection.cursor() as cursor:
+            tasks = cursor.fetchall(
                 "SELECT id, title, description, completed FROM tasks WHERE user_id = ?",
                 (user_id,),
             )
-            tasks = cursor.fetchall()
 
         return tasks
 
     @staticmethod
     def retrieve(id):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
             cursor.execute(
                 "SELECT title, description, completed FROM tasks WHERE id = ?", (id,)
             )
@@ -30,10 +27,9 @@ class Task:
 
     @staticmethod
     def create(data, user_id):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO tasks (id, user_id, title, description) VALUES (?, ?, ?, ?)",
+                "INSERT INTO tasks (id, user_id, title, description) VALUES (?, ?, ?, ?) RETURNING id",
                 (
                     str(uuid.uuid4()),
                     user_id,
@@ -42,19 +38,18 @@ class Task:
                 ),
             )
 
-            db.commit()
+            task_id = cursor.fetchone()
+
+        return task_id
 
     @staticmethod
     def delete(id):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
+
             cursor.execute("DELETE FROM tasks WHERE id = ?", (id,))
 
-            db.commit()
-
     def update(id, data):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
 
             cursor.execute(
                 """
@@ -65,5 +60,3 @@ class Task:
                 """,
                 (data.get("title"), data.get("description"), id),
             )
-
-            db.commit()

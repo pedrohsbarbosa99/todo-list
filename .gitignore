@@ -50,6 +50,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+deps/
+results/
 
 # Translations
 *.mo
@@ -75,6 +77,7 @@ docs/_build/
 # PyBuilder
 .pybuilder/
 target/
+.vscode
 
 # Jupyter Notebook
 .ipynb_checkpoints

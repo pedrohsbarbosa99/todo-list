@@ -1,6 +1,6 @@
 import uuid
 
-from core.database.config import get_db
+from core.database.config import connection
 from core.service.auth.utils import make_password
 
 
@@ -8,8 +8,8 @@ class User:
 
     @staticmethod
     def list():
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
+
             cursor.execute("SELECT * FROM users")
             users = cursor.fetchall()
 
@@ -17,8 +17,8 @@ class User:
 
     @staticmethod
     def retrieve(id):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
+
             cursor.execute("SELECT username FROM users WHERE id = ?", (id,))
             user = cursor.fetchone()
 
@@ -26,8 +26,8 @@ class User:
 
     @staticmethod
     def retrieve_by_username_for_auth(username):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
+
             cursor.execute(
                 "SELECT id, username, password FROM users WHERE username = ?",
                 (username,),
@@ -54,27 +54,22 @@ class User:
         if not password or not username:
             return
 
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
+
             cursor.execute(
                 "INSERT INTO users (id, username, password) VALUES (?, ?, ?)",
                 (str(uuid.uuid4()), data["username"], make_password(password)),
             )
 
-            db.commit()
-
     @staticmethod
     def delete(id):
-        with get_db() as db:
-            cursor = db.cursor()
-            cursor.execute("DELETE FROM users WHERE id = ?", (id,))
+        with connection.cursor() as cursor:
 
-            db.commit()
+            cursor.execute("DELETE FROM users WHERE id = ?", (id,))
 
     @staticmethod
     def update(self, id, data):
-        with get_db() as db:
-            cursor = db.cursor()
+        with connection.cursor() as cursor:
 
             cursor.execute(
                 """
@@ -84,5 +79,3 @@ class User:
                 """,
                 (data.get("username"), id),
             )
-
-            db.commit()
