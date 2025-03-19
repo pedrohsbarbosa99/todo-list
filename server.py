@@ -1,19 +1,8 @@
-import os
-from http.server import HTTPServer
-
-from core.database.config import init_db
-from dongle.handlers import RequestHandler
-
-HOST = os.environ.get("HOST", "127.0.0.1")
-PORT = int(os.environ.get("PORT", 8000))
-
-
-def run_server():
-    init_db()
-    server = HTTPServer((HOST, PORT), RequestHandler)
-    print(f"Servidor rodando em http://{HOST}:{PORT}")
-    server.serve_forever()
-
+from wsgi import application
 
 if __name__ == "__main__":
-    run_server()
+    from wsgiref.simple_server import make_server
+
+    httpd = make_server("127.0.0.1", 8000, application)
+    print(f"Servidor WSGI rodando em http://127.0.0.1:8000")
+    httpd.serve_forever()

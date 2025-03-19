@@ -10,9 +10,10 @@ ENV HOST=""
 ENV PORT=80
 
 RUN apt-get update && \
-    apt-get install -y gcc build-essential libpq-dev python3-dev git
+    apt-get install -y git
 
 RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+    pip install -r requirements.txt && \
+    pip install gunicorn
 
-CMD ["python", "server.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "wsgi:application"]
