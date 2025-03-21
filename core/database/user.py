@@ -10,7 +10,7 @@ class User:
     def list():
         with connection.cursor() as cursor:
 
-            cursor.execute("SELECT * FROM users")
+            cursor.execute("SELECT * FROM account")
             users = cursor.fetchall()
 
         return users
@@ -19,7 +19,7 @@ class User:
     def retrieve(id):
         with connection.cursor() as cursor:
 
-            cursor.execute("SELECT username FROM users WHERE id = $1", (id,))
+            cursor.execute("SELECT username FROM account WHERE id = $1", (id,))
             user = cursor.fetchone()
 
         return user
@@ -29,7 +29,7 @@ class User:
         with connection.cursor() as cursor:
 
             cursor.execute(
-                "SELECT id, username, password FROM users WHERE username = $1",
+                "SELECT id, username, password FROM account WHERE username = $1",
                 (username,),
             )
             user = cursor.fetchone()
@@ -57,7 +57,7 @@ class User:
         with connection.cursor() as cursor:
 
             cursor.execute(
-                "INSERT INTO users (id, username, password) VALUES ($1, $2, $3)",
+                "INSERT INTO account (id, username, password) VALUES ($1, $2, $3)",
                 (str(uuid.uuid4()), data["username"], make_password(password)),
             )
 
@@ -65,7 +65,7 @@ class User:
     def delete(id):
         with connection.cursor() as cursor:
 
-            cursor.execute("DELETE FROM users WHERE id = $1", (id,))
+            cursor.execute("DELETE FROM account WHERE id = $1", (id,))
 
     @staticmethod
     def update(self, id, data):
@@ -73,7 +73,7 @@ class User:
 
             cursor.execute(
                 """
-                UPDATE users 
+                UPDATE user
                 SET username = COALESCE($1, username)
                 WHERE id = $2
                 """,
