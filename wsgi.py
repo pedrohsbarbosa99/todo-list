@@ -1,15 +1,11 @@
 import json
 from functools import cached_property
 
-from core.database.config import init_db
 from core.urls import routes
 from dongle.utils import find_matching_route
 
 
 class WSGIApp:
-    def __init__(self):
-        init_db()
-
     def __call__(self, environ, start_response):
         request = WSGIRequest(environ)
 
